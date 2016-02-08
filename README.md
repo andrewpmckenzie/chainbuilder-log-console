@@ -17,7 +17,9 @@ var myChain = chainBuilder({
       // logs to debug instead of directly to console
       log: require('debug')('chainbuilder'),
       // includes args and results in output
-      detailed: true
+      detailed: true,
+      // experimental!
+      colors: true
     })
   ]
 });

@@ -1,6 +1,6 @@
 {
   "name": "chainbuilder-log-console",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Console logging mixin for chainbuilder.",
   "main": "index.js",
   "scripts": {
@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/andrewpmckenzie/chainbuilder-log-console#readme",
   "dependencies": {
+    "colors": "^1.1.2",
     "json-stringify-pretty-compact": "^1.0.1"
   },
   "peerDependencies": {
