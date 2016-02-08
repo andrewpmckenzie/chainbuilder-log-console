@@ -212,4 +212,85 @@ describe('chainbuilder-log-console', function () {
         }
       });
   });
+
+  it('should tidily print multiline values.', function (done) {
+    var circRef = { };
+    circRef['a'] = circRef;
+
+    myChain({ aLongKeyThatForcesWrapping: 'two', anotherLongKeyThatForcesWrapping: 'four' })
+      .inject({ five: 'six', six: 'seven' })
+      .inject(circRef)
+      .$beginTwice()
+        .inject({ aLongKeyThatForcesWrapping: 'six', six: [ 'seven', 'eight' ] })
+      .$endTwice()
+      .doThrow('error...\nBANG!')
+      .recover(function (e, cb) { cb(null, { aLongKeyThatForcesWrapping: 'six', nine: { aLongKeyThatForcesWrapping: 'eleven' } }); })
+      .end(function (e) {
+        if (e) return done(e);
+        try {
+          assert.deepEqual(output, [
+            ' ┬  ⟸  {                                          ',
+            ' │       "aLongKeyThatForcesWrapping": "two",     ',
+            ' │       "anotherLongKeyThatForcesWrapping": "four"  ',
+            ' │     }                                          ',
+            ' ├→ inject({"five": "six", "six": "seven"})       ',
+            ' │← {"five": "six", "six": "seven"}            ?ms',
+            ' ├→ inject([Circular])                            ',
+            ' │← [Circular]                                 ?ms',
+            ' ├→ $beginTwice()                                 ',
+            ' │← "beginning block"                          ?ms',
+            ' ├→ $endTwice(Chain(links=1))                     ',
+            ' │ ┬  ⟸  "c1"                                     ',
+            ' │ ├→ inject({                                    ',
+            ' │ │    "aLongKeyThatForcesWrapping": "six",      ',
+            ' │ │    "six": ["seven", "eight"]                 ',
+            ' │ │  })                                          ',
+            ' │ │← {                                        ?ms',
+            ' │ │    "aLongKeyThatForcesWrapping": "six",      ',
+            ' │ │    "six": ["seven", "eight"]                 ',
+            ' │ │  }                                           ',
+            ' │ ┴  ⟹  {                                     ?ms',
+            ' │       "aLongKeyThatForcesWrapping": "six",     ',
+            ' │       "six": ["seven", "eight"]                ',
+            ' │     }                                          ',
+            ' │ ┬  ⟸  "c2"                                     ',
+            ' │ ├→ inject({                                    ',
+            ' │ │    "aLongKeyThatForcesWrapping": "six",      ',
+            ' │ │    "six": ["seven", "eight"]                 ',
+            ' │ │  })                                          ',
+            ' │ │← {                                        ?ms',
+            ' │ │    "aLongKeyThatForcesWrapping": "six",      ',
+            ' │ │    "six": ["seven", "eight"]                 ',
+            ' │ │  }                                           ',
+            ' │ ┴  ⟹  {                                     ?ms',
+            ' │       "aLongKeyThatForcesWrapping": "six",     ',
+            ' │       "six": ["seven", "eight"]                ',
+            ' │     }                                          ',
+            ' │← {                                          ?ms',
+            ' │    "aLongKeyThatForcesWrapping": "six",        ',
+            ' │    "six": ["seven", "eight"]                   ',
+            ' │  }                                             ',
+            ' ├→ doThrow("error...\\nBANG!")                    ',
+            ' │✕ Error: error...                            ?ms',
+            ' │  BANG!                                         ',
+            ' ├→ recover([Function])                           ',
+            ' │← {                                          ?ms',
+            ' │    "aLongKeyThatForcesWrapping": "six",        ',
+            ' │    "nine": {                                   ',
+            ' │      "aLongKeyThatForcesWrapping": "eleven"    ',
+            ' │    }                                           ',
+            ' │  }                                             ',
+            ' ┴  ⟹  {                                       ?ms',
+            '       "aLongKeyThatForcesWrapping": "six",       ',
+            '       "nine": {                                  ',
+            '         "aLongKeyThatForcesWrapping": "eleven"   ',
+            '       }                                          ',
+            '     }                                            '
+          ]);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      });
+  });
 });
