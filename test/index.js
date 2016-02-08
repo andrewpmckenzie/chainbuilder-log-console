@@ -194,4 +194,22 @@ describe('chainbuilder-log-console', function () {
       });
   });
 
+  it('should treat a call to "end" as the end of the chain.', function (done) {
+    myChain('init')
+      .testOne()
+      .end(function (e) {
+        if (e) return done(e);
+        try {
+          assert.deepEqual(output, [
+            ' ┬  ⟸  "init"                                     ',
+            ' ├→ testOne()                                     ',
+            ' │← "one"                                      ?ms',
+            ' ┴  ⟹  "one"                                   ?ms'
+          ]);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      });
+  });
 });
