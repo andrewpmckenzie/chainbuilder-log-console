@@ -1,6 +1,6 @@
 {
   "name": "chainbuilder-log-console",
-  "version": "1.2.0",
+  "version": "1.2.1",
   "description": "Console logging mixin for chainbuilder.",
   "main": "index.js",
   "scripts": {

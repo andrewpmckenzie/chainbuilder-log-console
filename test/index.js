@@ -314,20 +314,20 @@ describe('chainbuilder-log-console', function () {
         try {
           assert.deepEqual(output, [
            ' ┬  ⟸  "init"                                     ',
-           ' ├→ testOne()                       index.js:308:8',
-           ' │← "one"                     index.js:29:35   ?ms',
-           ' ├→ $beginTwice()                   index.js:309:8',
-           ' │← "beginning block"         index.js:16:39   ?ms',
-           ' ├→ $endTwice(Chain(links=1))       index.js:311:8',
+           ' ├→ testOne()  chainbuilder-log-console/test/index.js:308:8',
+           ' │← "one"  chainbuilder-log-console/test/index.js:29:35   ?ms',
+           ' ├→ $beginTwice()  chainbuilder-log-console/test/index.js:309:8',
+           ' │← "beginning block"  chainbuilder-log-console/test/index.js:16:39   ?ms',
+           ' ├→ $endTwice(Chain(links=1))  chainbuilder-log-console/test/index.js:311:8',
            ' │ ┬  ⟸  "c1"                                     ',
-           ' │ ├→ inject("foo")                index.js:310:10',
-           ' │ │← "foo"                   index.js:18:13   ?ms',
+           ' │ ├→ inject("foo")  chainbuilder-log-console/test/index.js:310:10',
+           ' │ │← "foo"  chainbuilder-log-console/test/index.js:18:13   ?ms',
            ' │ ┴  ⟹  "foo"                                 ?ms',
            ' │ ┬  ⟸  "c2"                                     ',
-           ' │ ├→ inject("foo")                index.js:310:10',
-           ' │ │← "foo"                   index.js:20:15   ?ms',
+           ' │ ├→ inject("foo")  chainbuilder-log-console/test/index.js:310:10',
+           ' │ │← "foo"  chainbuilder-log-console/test/index.js:20:15   ?ms',
            ' │ ┴  ⟹  "foo"                                 ?ms',
-           ' │← "foo"                     index.js:20:15   ?ms',
+           ' │← "foo"  chainbuilder-log-console/test/index.js:20:15   ?ms',
            ' ┴  ⟹  "foo"                                   ?ms'
           ]);
           done();
