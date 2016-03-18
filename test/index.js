@@ -2,7 +2,7 @@ var assert = require('chai').assert;
 var chainBuilder = require('chainbuilder');
 
 describe('chainbuilder-log-console', function () {
-  var myChain, output;
+  var myChain, methods, mixins, output;
 
   beforeEach(function () {
     output = [];
@@ -34,21 +34,22 @@ describe('chainbuilder-log-console', function () {
 
     var doThrow = function (a, cb) { cb(new Error(a)); };
 
-    myChain = chainBuilder({
-      methods: {
-        $beginTwice: $beginTwice,
-        $endTwice: $endTwice,
-        withArgTransform: withArgTransform,
-        doThrow: doThrow,
-        testOne: testOne,
-        testTwo: testTwo,
-        testThree: testThree,
-        withSubchain: withSubchain
-      },
-      mixins: [
-        require('..')({ log: log, width: 50 })
-      ]
-    });
+    methods = {
+      $beginTwice: $beginTwice,
+      $endTwice: $endTwice,
+      withArgTransform: withArgTransform,
+      doThrow: doThrow,
+      testOne: testOne,
+      testTwo: testTwo,
+      testThree: testThree,
+      withSubchain: withSubchain
+    };
+
+    mixins = [
+      require('..')({ log: log, width: 50 })
+    ];
+
+    myChain = chainBuilder({ methods: methods, mixins: mixins });
   });
 
   it('should log method calls and results', function (done) {
@@ -288,6 +289,46 @@ describe('chainbuilder-log-console', function () {
             '         "aLongKeyThatForcesWrapping": "eleven"   ',
             '       }                                          ',
             '     }                                            '
+          ]);
+          done();
+        } catch (e) {
+          done(e);
+        }
+      });
+  });
+
+  it('should show stacks when they\'re present.', function (done) {
+    var myChain = chainBuilder({
+      enableStack: true,
+      methods: methods,
+      mixins: mixins
+    });
+
+    myChain('init')
+      .testOne()
+      .$beginTwice()
+        .inject('foo')
+      .$endTwice()
+      .end(function (e) {
+        if (e) return done(e);
+        try {
+          assert.deepEqual(output, [
+           ' ┬  ⟸  "init"                                     ',
+           ' ├→ testOne()                       index.js:308:8',
+           ' │← "one"                     index.js:29:35   ?ms',
+           ' ├→ $beginTwice()                   index.js:309:8',
+           ' │← "beginning block"         index.js:16:39   ?ms',
+           ' ├→ $endTwice(Chain(links=1))       index.js:311:8',
+           ' │ ┬  ⟸  "c1"                                     ',
+           ' │ ├→ inject("foo")                index.js:310:10',
+           ' │ │← "foo"                   index.js:18:13   ?ms',
+           ' │ ┴  ⟹  "foo"                                 ?ms',
+           ' │ ┬  ⟸  "c2"                                     ',
+           ' │ ├→ inject("foo")                index.js:310:10',
+           ' │ │← "foo"                   index.js:20:15   ?ms',
+           ' │ ┴  ⟹  "foo"                                 ?ms',
+           ' │← "foo"                     index.js:20:15   ?ms',
+           ' ┴  ⟹  "foo"                                   ?ms'
           ]);
           done();
         } catch (e) {

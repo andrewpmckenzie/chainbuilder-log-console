@@ -1,6 +1,6 @@
 {
   "name": "chainbuilder-log-console",
-  "version": "1.0.3",
+  "version": "1.2.0",
   "description": "Console logging mixin for chainbuilder.",
   "main": "index.js",
   "scripts": {
@@ -28,11 +28,11 @@
     "json-stringify-pretty-compact": "^1.0.1"
   },
   "peerDependencies": {
-    "chainbuilder": ">= 2.1.1"
+    "chainbuilder": ">= 2.2.0"
   },
   "devDependencies": {
     "chai": "^3.4.1",
-    "chainbuilder": ">= 2.1.1",
+    "chainbuilder": ">= 2.2.0",
     "mocha": "^2.3.4",
     "sinon": "^1.17.2"
   }
